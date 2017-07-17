@@ -10,8 +10,7 @@ use Mix.Config
 
 # You can configure for your application as:
 #
-config :mattslasher, 
-    cowboy_port: 4444,
+config :mattslasher,
     allowed_request_keys: [
         "response_url",
         "text",
@@ -22,7 +21,17 @@ config :mattslasher,
         "team_domain",
         "user_name",
         "channel_name"
-    ]
+    ],
+    openweathermap_api_url: "http://api.openweathermap.org/data/2.5/",
+    openweathermap_api_units: %{
+        "temperatur" => %{ "standard" => "K", "metric" => "°C", "imperial" => "F" },
+        "pressure" => %{ "standard" => "hPa" },
+        "speed" => %{ "standard" => "meter/sec", "imperial" => "miles/hour" },
+        "precipitation" => %{ "standard" => "mm"},
+        "wind_direction" => %{ "standard" => "degree"},
+        "cloudiness" => %{ "standard" => "%" },
+        "humidity" => %{ "standard" => "%"}
+    }
 #
 # And access this configuration in your application as:
 #

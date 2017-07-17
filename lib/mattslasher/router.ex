@@ -16,6 +16,10 @@ defmodule Mattslasher.Router do
     if verified == true do
       data = Mattslasher.RequestParser.parse_slashcommand(params)
 
+      if data.command === "/weather" do
+        weather_data = OpenWeatherMap.CurrentWeatherData.by_city_name(params.text)
+      end
+
       conn
       |> send_resp(200, "Good")
     else

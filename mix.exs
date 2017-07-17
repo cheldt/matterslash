@@ -15,7 +15,7 @@ defmodule Mattslasher.Mixfile do
   # Type "mix help compile.app" for more information
   def application do
     # Specify extra applications you'll use from Erlang/Elixir
-    [extra_applications: [:logger, :cowboy, :plug],
+    [extra_applications: [],
      mod: {Mattslasher.Application, []}]
   end
 
@@ -31,7 +31,9 @@ defmodule Mattslasher.Mixfile do
   defp deps do
     [
       {:cowboy, "~> 1.0"},
-      {:plug, "~> 1.0"}
+      {:plug, "~> 1.0"},
+      {:tesla, "~> 0.7.1"},
+      {:poison, ">= 1.0.0"}
     ]
   end
 end
