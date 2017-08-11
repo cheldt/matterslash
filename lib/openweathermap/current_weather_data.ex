@@ -27,12 +27,12 @@ defmodule OpenWeatherMap.CurrentWeatherData do
 
   """
   def by_city_name_cached(cityname) do
-    cached_data = OpenWeatherMap.WeatherDataCache.get_current_weather_data()
+    cached_data = OpenWeatherMap.WeatherDataCache.get_current_weather_data(cityname)
     
     if %OpenWeatherMap.CurrentWeatherData{} == cached_data do
       weather_data = by_city_name(cityname)
 
-      OpenWeatherMap.WeatherDataCache.set_current_weather_data(weather_data)
+      OpenWeatherMap.WeatherDataCache.set_current_weather_data(weather_data, cityname)
 
       weather_data
     else

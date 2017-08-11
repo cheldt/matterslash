@@ -6,10 +6,10 @@ defmodule OpenWeatherMap.WeatherDataCache do
   Returns empty struct on empty cache.
 
   """
-  def get_current_weather_data() do
+  def get_current_weather_data(cityname) do
     data = Cachex.get!(
       :weather_data_cache,
-      @current_weather_data_cache_key
+      get_cache_key(cityname)
     )
 
     if data === nil do
@@ -23,10 +23,10 @@ defmodule OpenWeatherMap.WeatherDataCache do
   Writes current weather to cache.
 
   """
-  def set_current_weather_data(data) do
+  def set_current_weather_data(data, cityname) do
     Cachex.set(
       :weather_data_cache,
-      @current_weather_data_cache_key,
+      get_cache_key(cityname),
       data,
       get_options()
     )
@@ -38,5 +38,9 @@ defmodule OpenWeatherMap.WeatherDataCache do
 
   defp get_options do
     [ttl: :timer.seconds(Application.get_env(:mattslasher, :openweathermap_api_cache_ttl))]
+  end
+
+  defp get_cache_key(cityname) do
+    String.downcase(cityname) <> @current_weather_data_cache_key
   end
 end

@@ -17,7 +17,7 @@ defmodule Mattslasher.Router do
       data = Mattslasher.RequestParser.parse_slashcommand(params)
 
       response =
-        if data.command === "/weather" do
+        if data.command === "/weather" && data.text !== "" do
           current_weather_data = OpenWeatherMap.CurrentWeatherData.by_city_name_cached(data.text)
 
           Mattslasher.MattermostTable.render_table(
