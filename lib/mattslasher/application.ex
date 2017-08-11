@@ -9,13 +9,14 @@ defmodule Mattslasher.Application do
     
     put_runtime_config_to_app_config()
 
-    port = String.to_integer(Application.get_env(:mattslasher, :cowboy_port, 4444))
+    port = Application.get_env(:mattslasher, :cowboy_port)
     
     # Define workers and child supervisors to be supervised
     children = [
       # Starts a worker by calling: Mattslasher.Worker.start_link(arg1, arg2, arg3)
       # worker(Mattslasher.Worker, [arg1, arg2, arg3]),
-      worker(Mattslasher.Router, [port])
+      worker(Mattslasher.Router, [port]),
+      worker(OpenWeatherMap.WeatherDataCache, [])
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
@@ -25,9 +26,20 @@ defmodule Mattslasher.Application do
   end
 
   defp put_runtime_config_to_app_config do
-    Application.put_env(:mattslasher, :cowboy_port, System.get_env("MATTSLASHER_PORT"))
-    Application.put_env(:mattslasher, :openweathermap_api_key, System.get_env("OPENWEATHERMAP_API_KEY"))
-    Application.put_env(:mattslasher, :openweathermap_api_lang, System.get_env("OPENWEATHERMAP_API_LANG"))
-    Application.put_env(:mattslasher, :openweathermap_api_unit, System.get_env("OPENWEATHERMAP_API_UNIT"))
+    Application.put_env(:mattslasher, :cowboy_port, String.to_integer(get_system_env("MATTSLASHER_PORT", 4444)))
+    Application.put_env(:mattslasher, :openweathermap_api_key, get_system_env("OPENWEATHERMAP_API_KEY", ""))
+    Application.put_env(:mattslasher, :openweathermap_api_lang, get_system_env("OPENWEATHERMAP_API_LANG", "de"))
+    Application.put_env(:mattslasher, :openweathermap_api_unit, get_system_env("OPENWEATHERMAP_API_UNIT", "metric"))
+    Application.put_env(:mattslasher, :openweathermap_api_timezone, get_system_env("OPENWEATHERMAP_API_TIMEZONE", "Europe/Berlin"))
+    Application.put_env(:mattslasher, :openweathermap_api_cache_ttl, String.to_integer(get_system_env("OPENWEATHERMAP_API_CACHE_TTL", 30)))
+  end
+
+  defp get_system_env(name, default) do
+    value = System.get_env(name)
+    if value === nil do
+      default
+    else
+      value
+    end
   end
 end

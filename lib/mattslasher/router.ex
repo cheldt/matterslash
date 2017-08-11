@@ -16,12 +16,25 @@ defmodule Mattslasher.Router do
     if verified == true do
       data = Mattslasher.RequestParser.parse_slashcommand(params)
 
-      if data.command === "/weather" do
-        weather_data = OpenWeatherMap.CurrentWeatherData.by_city_name(params.text)
-      end
+      response =
+        if data.command === "/weather" do
+          current_weather_data = OpenWeatherMap.CurrentWeatherData.by_city_name_cached(data.text)
+
+          Mattslasher.MattermostTable.render_table(
+            %Mattslasher.MattermostTable{
+              alignments: ["c", "c"],
+              rows:       OpenWeatherMap.CurrentWeatherData.map_struct_to_list(
+                current_weather_data,
+                [["Name", "Value"]]
+              ),
+            }
+          )
+        else
+          "good"
+        end
 
       conn
-      |> send_resp(200, "Good")
+      |> put_resp_header("Content-Type", "text/plain") |> send_resp(200, response)
     else
       conn 
       |> send_resp(400, "Bad Request!")

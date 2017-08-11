@@ -33,7 +33,9 @@ defmodule Mattslasher.Mixfile do
       {:cowboy, "~> 1.0"},
       {:plug, "~> 1.0"},
       {:tesla, "~> 0.7.1"},
-      {:poison, ">= 1.0.0"}
+      {:poison, ">= 1.0.0"},
+      {:cachex, "~> 2.1"},
+      {:timex, "~> 3.1"},
     ]
   end
 end

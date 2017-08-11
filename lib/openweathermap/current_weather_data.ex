@@ -21,25 +21,67 @@ defmodule OpenWeatherMap.CurrentWeatherData do
   plug Tesla.Middleware.BaseUrl, Application.get_env(:mattslasher, :openweathermap_api_url, "")
   plug Tesla.Middleware.JSON
 
+  @doc """
+  Returns current weather by city and caches result.
+  Subsequent calls are served from cache.
+
+  """
+  def by_city_name_cached(cityname) do
+    cached_data = OpenWeatherMap.WeatherDataCache.get_current_weather_data()
+    
+    if %OpenWeatherMap.CurrentWeatherData{} == cached_data do
+      weather_data = by_city_name(cityname)
+
+      OpenWeatherMap.WeatherDataCache.set_current_weather_data(weather_data)
+
+      weather_data
+    else
+      cached_data
+    end
+  end
+
+  @doc """
+  Returns current weather by city as struct.
+
+  """
   def by_city_name(cityname) do
     response = get(
       @api_end_point,
-      query: build_params(
-        [q: cityname],
-        Application.get_env(:mattslasher, :openweathermap_api_key, ""),
-        Application.get_env(:mattslasher, :openweathermap_api_lang, ""),
-        Application.get_env(:mattslasher, :openweathermap_api_unit, "")
-      )
+      query: build_params([q: cityname])
     )
 
-    map_to_struct(
-      response.body,
-      Application.get_env(:mattslasher, :openweathermap_api_unit, "standard"),
-      Application.get_env(:mattslasher, :openweathermap_api_units, %{})
-    )
+    if response.body === nil do
+      %OpenWeatherMap.CurrentWeatherData{}
+    else 
+      map_response_to_struct(
+        response.body,
+        Application.get_env(:mattslasher, :openweathermap_api_unit, "standard"),
+        Application.get_env(:mattslasher, :openweathermap_api_units, %{})
+      )
+    end
   end
 
-  defp map_to_struct(response_body, system_of_measurement, units_config) do
+  @doc """
+  Returns raw response of current weather by city.
+
+  """
+  def by_city_name_raw(cityname) do
+    response = get(
+      @api_end_point,
+      query: build_params([q: cityname])
+    )
+    if response.body === nil do
+      ""
+    else
+      response.body
+    end
+  end
+
+  @doc """
+  Maps response to struct.
+
+  """
+  def map_response_to_struct(response_body, system_of_measurement, units_config) do
     %OpenWeatherMap.CurrentWeatherData{
       name:        response_body["name"],
       country:     response_body["sys"]["country"],
@@ -56,11 +98,39 @@ defmodule OpenWeatherMap.CurrentWeatherData do
     }
   end
 
-  defp build_params(api_key, lang, units, additional_params) do
+  @doc """
+  Maps weather data struct to list.
+
+  """
+  def map_struct_to_list(current_weather_data_struct, list \\ []) do
+    timezone = Timex.Timezone.get(Application.get_env(:mattslasher, :openweathermap_api_timezone), Timex.now)
+
+    Enum.reduce(
+      Map.keys(current_weather_data_struct) |> Enum.filter(fn x -> x != :__struct__ end),
+      list,
+      fn(param, acc) ->
+        value = Map.get(current_weather_data_struct, param)
+
+        string_value =
+          case value do
+            %OpenWeatherMap.Unit{} ->
+              OpenWeatherMap.Unit.to_string(value)
+            %DateTime{} ->
+              Time.to_string(Timex.Timezone.convert(value, timezone))
+              _ ->
+                value
+          end
+
+        acc ++ [[Atom.to_string(param), string_value]]
+      end
+    )
+  end
+
+  defp build_params(additional_params) do
     [
-      APPID: api_key,
-      lang:  lang,
-      units: units,
+      APPID: Application.get_env(:mattslasher, :openweathermap_api_key, ""),
+      lang:  Application.get_env(:mattslasher, :openweathermap_api_lang, ""),
+      units: Application.get_env(:mattslasher, :openweathermap_api_unit, ""),
     ] ++ additional_params
   end
 end

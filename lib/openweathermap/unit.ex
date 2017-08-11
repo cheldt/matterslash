@@ -20,7 +20,14 @@ defmodule OpenWeatherMap.Unit do
 
   """
   def to_string(unit, separator \\ " ", precision \\ 2) do
-    Float.to_string(Float.round(unit.value, precision)) <> separator <> unit.symbol
+    string_value =
+      if is_integer(unit.value) do
+          Integer.to_string(unit.value)
+      else
+          Float.to_string(Float.round(unit.value, precision))
+      end
+
+    string_value <> separator <> unit.symbol
   end
 
   defp get_unit_from_config(type, system_of_measurement, units_config) do
