@@ -30,7 +30,8 @@ defmodule OpenWeatherMap.CurrentWeatherDataTest do
       temp_max:    %OpenWeatherMap.Unit{symbol: "°C", value: 15},
       temp_min:    %OpenWeatherMap.Unit{symbol: "°C", value: 13},
       wind_degree: %OpenWeatherMap.Unit{symbol: "degree", value: 240},
-      wind_speed:  %OpenWeatherMap.Unit{symbol: "meter/sec", value: 4.1}
+      wind_speed:  %OpenWeatherMap.Unit{symbol: "meter/sec", value: 4.1},
+      cod:         200
     }
 
     assert expected_struct === map_response_to_struct(response, "metric", Application.get_env(:mattslasher, :openweathermap_api_units, %{}))
@@ -49,7 +50,7 @@ defmodule OpenWeatherMap.CurrentWeatherDataTest do
       temp_max:    %OpenWeatherMap.Unit{symbol: "°C", value: 15},
       temp_min:    %OpenWeatherMap.Unit{symbol: "°C", value: 13},
       wind_degree: %OpenWeatherMap.Unit{symbol: "degree", value: 240},
-      wind_speed:  %OpenWeatherMap.Unit{symbol: "meter/sec", value: 4.1}
+      wind_speed:  %OpenWeatherMap.Unit{symbol: "meter/sec", value: 4.1},
     }
 
     expected_list = [

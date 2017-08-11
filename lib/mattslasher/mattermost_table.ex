@@ -1,18 +1,30 @@
 defmodule Mattslasher.MattermostTable do
+  @moduledoc """
+  Module for rendering mattermost table
+  """
+
   defstruct [
     alignments: [],
     rows:       [],
   ]
 
+  @typedoc """
+  Represents a mattermost table with
+  - alignments: as list of alignment for each column
+  - rows: as list of all rows (first row is header row)
+  """
+  @type t :: %__MODULE__{alignments: List.t, rows: List.t}
+
   @doc ~S"""
   Renders mattermost table
 
    ## Example
-    iex> render_table(%Mattslasher.MattermostTable{alignments: [], rows: []})
+    iex> render_table(%Mattslasher.MattermostTable{})
     ""
     iex> render_table(%Mattslasher.MattermostTable{alignments: ["c", "l", "r"], rows: [["foo", "bar", "baz"], ["test", "test1", "test2"]]})
     "|foo|bar|baz|\n|:-:|:-|-:|\n|test|test1|test2|\n"
   """
+  @spec render_table(Mattslasher.MattermostTable.t) :: String.t
   def render_table(table_struct) do
     {header_row, popped_list} = List.pop_at(table_struct.rows, 0)
 
@@ -57,10 +69,7 @@ defmodule Mattslasher.MattermostTable do
 
     table_rows =
       if row != nil do
-        render_table_rows(
-          popped_list,
-          table <> render_table_row(row)
-        )
+        render_table_rows(popped_list, table <> render_table_row(row))
       else
         table
       end

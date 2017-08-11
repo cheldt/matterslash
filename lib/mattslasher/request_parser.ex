@@ -7,6 +7,7 @@ defmodule Mattslasher.RequestParser do
   Verifies, that all expected form vars are present in request.
 
   """
+  @spec verify_request(map, List.t) :: boolean
   def verify_request(params, expected_fields) do
     if %{} == params do
       false
@@ -22,6 +23,7 @@ defmodule Mattslasher.RequestParser do
   Assigns post params to slash command struct
 
   """
+  @spec parse_slashcommand(map) :: Mattslasher.SlashCommand.t
   def parse_slashcommand(params) do
     struct(
         Mattslasher.SlashCommand,
