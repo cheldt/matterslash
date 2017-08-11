@@ -1,5 +1,7 @@
 # Mattslasher
 
+[![Master](https://travis-ci.org/cheldt/mattslasher.svg?branch=master)](https://travis-ci.org/cheldt/mattslasher)
+
 Simple http server, which handles mattermost slash commands.
 
 Supported slashcommands:
