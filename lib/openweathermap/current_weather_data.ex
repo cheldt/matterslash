@@ -1,9 +1,10 @@
 defmodule OpenWeatherMap.CurrentWeatherData do
-  use Tesla.Builder
 
   @moduledoc """
   Module for requesting current weather date from openweathermap api
   """
+
+  @http_client_implenetation Application.fetch_env!(:mattslasher, :openweathermap_api_http_client_implementation)
 
   defstruct [
     name:        "",
@@ -40,9 +41,6 @@ defmodule OpenWeatherMap.CurrentWeatherData do
   }
 
   @api_end_point "/weather"
-  
-  plug Tesla.Middleware.BaseUrl, Application.get_env(:mattslasher, :openweathermap_api_url, "")
-  plug Tesla.Middleware.JSON
 
   @doc """
   Returns current weather by city and caches result.
@@ -70,7 +68,7 @@ defmodule OpenWeatherMap.CurrentWeatherData do
   """
   @spec by_city_name(String.t) :: OpenWeatherMap.Unit.t
   def by_city_name(cityname) do
-    body = send_request(cityname)
+    body = @http_client_implenetation.send_request(@api_end_point, get_params(cityname))
 
     size = map_size(body)
 
@@ -92,7 +90,7 @@ defmodule OpenWeatherMap.CurrentWeatherData do
   """
   @spec by_city_name_raw(String.t) :: map()
   def by_city_name_raw(cityname) do
-    send_request(cityname)
+    @http_client_implenetation.send_request(@api_end_point, get_params(cityname))
   end
 
   @doc """
@@ -142,7 +140,7 @@ defmodule OpenWeatherMap.CurrentWeatherData do
             %DateTime{} ->
               Time.to_string(Timex.Timezone.convert(value, timezone))
               _ ->
-                value
+              value
           end
 
         acc ++ [[Atom.to_string(param), string_value]]
@@ -150,24 +148,7 @@ defmodule OpenWeatherMap.CurrentWeatherData do
     )
   end
 
-  defp send_request(cityname) do
-    try do
-      response = get(
-        @api_end_point,
-        query: build_params([q: cityname])
-      )
-
-      response.body
-    catch
-       _, tesla_error -> %{"cod" => 500, "message" => tesla_error.message}
-    end
-  end
-
-  defp build_params(additional_params) do
-    [
-      APPID: Application.get_env(:mattslasher, :openweathermap_api_key, ""),
-      lang:  Application.get_env(:mattslasher, :openweathermap_api_lang, ""),
-      units: Application.get_env(:mattslasher, :openweathermap_api_unit, ""),
-    ] ++ additional_params
+  defp get_params(cityname) do
+    [q: cityname]
   end
 end

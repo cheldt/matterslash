@@ -31,7 +31,8 @@ config :mattslasher,
         "wind_direction" => %{ "standard" => "degree"},
         "cloudiness" => %{ "standard" => "%" },
         "humidity" => %{ "standard" => "%"}
-    }
+    },
+    openweathermap_api_http_client_implementation: OpenWeatherMap.HttpClient
 #
 # And access this configuration in your application as:
 #
@@ -48,4 +49,4 @@ config :mattslasher,
 # Configuration from the imported file will override the ones defined
 # here (which is why it is important to import them last).
 #
-#     import_config "#{Mix.env}.exs"
+import_config "#{Mix.env}.exs"
