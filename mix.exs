@@ -9,7 +9,9 @@ defmodule Mattslasher.Mixfile do
       build_embedded: Mix.env == :prod,
       start_permanent: Mix.env == :prod,
       elixirc_paths: elixirc_paths(Mix.env),
-      deps: deps()
+      deps: deps(),
+      test_coverage: [tool: ExCoveralls],
+      preferred_cli_env: ["coveralls": :test, "coveralls.detail": :test, "coveralls.post": :test, "coveralls.html": :test]
     ]
   end
 
@@ -42,6 +44,7 @@ defmodule Mattslasher.Mixfile do
       {:poison, "~> 3.1"},
       {:cachex, "~> 2.1"},
       {:timex, "~> 3.1"},
+      {:excoveralls, "~> 0.7", only: :test}
     ]
   end
 end

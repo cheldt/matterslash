@@ -4,7 +4,6 @@ defmodule OpenWeatherMap.CurrentWeatherDataTest do
 
   test "by_city_name returns currentweather-struct including error code on http-client error" do
     OpenWeatherMap.HttpClientMock.start_link
-    OpenWeatherMap.HttpClientMock.clear
 
     OpenWeatherMap.HttpClientMock.add_response(%{"cod" => 500, "message" => "foo bar"})
 
@@ -15,7 +14,6 @@ defmodule OpenWeatherMap.CurrentWeatherDataTest do
 
   test "by_city_name returns well defined struct on success" do
     OpenWeatherMap.HttpClientMock.start_link
-    OpenWeatherMap.HttpClientMock.clear
 
     response = %{
       "base" => "stations",
@@ -55,7 +53,6 @@ defmodule OpenWeatherMap.CurrentWeatherDataTest do
 
   test "by_city_name_raw returns map including error code on http-client error" do
     OpenWeatherMap.HttpClientMock.start_link
-    OpenWeatherMap.HttpClientMock.clear
 
     OpenWeatherMap.HttpClientMock.add_response(%{"cod" => 500, "message" => "foo bar"})
 
@@ -66,7 +63,6 @@ defmodule OpenWeatherMap.CurrentWeatherDataTest do
 
   test "by_city_name_raw returns complete json response as map" do
     OpenWeatherMap.HttpClientMock.start_link
-    OpenWeatherMap.HttpClientMock.clear
 
     response = %{
       "base" => "stations",

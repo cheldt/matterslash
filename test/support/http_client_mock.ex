@@ -9,10 +9,6 @@ defmodule OpenWeatherMap.HttpClientMock do
     Agent.update(__MODULE__, fn _ -> response end)
   end  
 
-  def clear do
-    Agent.update(__MODULE__, fn _ -> %{} end)
-  end
-
   def send_request(_, _) do
     Agent.get(__MODULE__, fn response -> response end)
   end
