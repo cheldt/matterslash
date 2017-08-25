@@ -47,7 +47,7 @@ defmodule OpenWeatherMap.CurrentWeatherData do
   Subsequent calls are served from cache.
 
   """
-  @spec by_city_name_cached(String.t) :: OpenWeatherMap.Unit.t
+  @spec by_city_name_cached(String.t) :: OpenWeatherMap.CurrentWeatherData.t
   def by_city_name_cached(cityname) do
     cached_data = OpenWeatherMap.WeatherDataCache.get_current_weather_data(cityname)
     
@@ -66,7 +66,7 @@ defmodule OpenWeatherMap.CurrentWeatherData do
   Returns current weather by city as struct.
 
   """
-  @spec by_city_name(String.t) :: OpenWeatherMap.Unit.t
+  @spec by_city_name(String.t) :: OpenWeatherMap.CurrentWeatherData.t
   def by_city_name(cityname) do
     body = @http_client_implenetation.send_request(@api_end_point, get_params(cityname))
 
@@ -97,7 +97,7 @@ defmodule OpenWeatherMap.CurrentWeatherData do
   Maps response to struct.
 
   """
-  @spec map_response_to_struct(map(), String.t, String.t) :: OpenWeatherMap.Unit.t
+  @spec map_response_to_struct(map(), String.t, String.t) :: OpenWeatherMap.CurrentWeatherData.t
   def map_response_to_struct(response_body, system_of_measurement, units_config) do
     %OpenWeatherMap.CurrentWeatherData{
       name:        response_body["name"],
