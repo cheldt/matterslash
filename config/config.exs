@@ -32,7 +32,8 @@ config :mattslasher,
         "cloudiness" => %{ "standard" => "%" },
         "humidity" => %{ "standard" => "%"}
     },
-    openweathermap_api_http_client_implementation: OpenWeatherMap.HttpClient
+    openweathermap_api_http_client_implementation: OpenWeatherMap.HttpClient,
+    cachex_implementation: Cachex
 #
 # And access this configuration in your application as:
 #

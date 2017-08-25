@@ -2,6 +2,7 @@ defmodule OpenWeatherMap.WeatherDataCache do
   @moduledoc """
   Module for caching current weather data
   """
+  @cachex_implementation Application.fetch_env!(:mattslasher, :cachex_implementation)
 
   @current_weather_data_cache_key "current_weather_data"
 
@@ -10,9 +11,9 @@ defmodule OpenWeatherMap.WeatherDataCache do
   Returns empty struct on empty cache.
 
   """
-  @spec get_current_weather_data(String.t) :: OpenWeatherMap.Unit.t
+  @spec get_current_weather_data(String.t) :: OpenWeatherMap.CurrentWeatherData.t
   def get_current_weather_data(cityname) do
-    data = Cachex.get!(
+    data = @cachex_implementation.get!(
       :weather_data_cache,
       get_cache_key(cityname)
     )
@@ -28,9 +29,9 @@ defmodule OpenWeatherMap.WeatherDataCache do
   Writes current weather to cache.
 
   """
-  @spec set_current_weather_data(OpenWeatherMap.Unit.t, String.t) :: {Cachex.status, true | false}
+  @spec set_current_weather_data(OpenWeatherMap.CurrentWeatherData.t, String.t) :: {Cachex.status, true | false}
   def set_current_weather_data(data, cityname) do
-    Cachex.set(
+    @cachex_implementation.set(
       :weather_data_cache,
       get_cache_key(cityname),
       data,
@@ -38,8 +39,8 @@ defmodule OpenWeatherMap.WeatherDataCache do
     )
   end  
   
-  def start_link do
-    Cachex.start_link(:weather_data_cache, [])
+  def start_link() do
+    @cachex_implementation.start_link(:weather_data_cache, [])
   end
 
   defp get_options do
@@ -47,6 +48,6 @@ defmodule OpenWeatherMap.WeatherDataCache do
   end
 
   defp get_cache_key(cityname) do
-    String.downcase(cityname) <> @current_weather_data_cache_key
+    String.trim(String.downcase(cityname)) <> @current_weather_data_cache_key
   end
 end
