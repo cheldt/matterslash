@@ -1,5 +1,5 @@
 defmodule OpenWeatherMap.WeatherDataCacheTest do
-  use ExUnit.Case, async: true
+  use ExUnit.Case
   import OpenWeatherMap.WeatherDataCache
   
   setup do

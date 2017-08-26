@@ -24,7 +24,7 @@ defmodule Mattslasher.Mixfile do
   def application do
     # Specify extra applications you'll use from Erlang/Elixir
     [extra_applications: [],
-     mod: {Mattslasher.Application, []}]
+     mod: {Mattslasher.Application, [:maxwell]}]
   end
 
   # Dependencies can be Hex packages:
@@ -38,9 +38,9 @@ defmodule Mattslasher.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-      {:cowboy, "~> 1.0"},
-      {:plug, "~> 1.0"},
-      {:tesla, "~> 0.7.1"},
+      {:cowboy, "~> 1.1"},
+      {:plug, "~> 1.4"},
+      {:maxwell, "~> 2.2.1"},
       {:poison, "~> 3.1"},
       {:cachex, "~> 2.1"},
       {:timex, "~> 3.1"},

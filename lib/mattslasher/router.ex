@@ -1,56 +1,32 @@
 defmodule Mattslasher.Router do
   use Plug.Router
+  import Mattslasher.CommandBridge
 
   plug Plug.Parsers, parsers: [:urlencoded]
+  plug Mattslasher.Plug.VerifyRequest, fields: Application.get_env(:mattslasher, :allowed_request_keys)
   plug :match
   plug :dispatch
   
   post "/" do
     params = conn.params
 
-    verified = Mattslasher.RequestParser.verify_request(
-      params,
-      Application.get_env(:mattslasher, :allowed_request_keys, [])
-    )
+    data = Mattslasher.RequestParser.parse_slashcommand(params)
 
-    if verified == true do
-      data = Mattslasher.RequestParser.parse_slashcommand(params)
-
-      response =
-        if data.command === "/weather" && data.text !== "" do
-          current_weather_data = OpenWeatherMap.CurrentWeatherData.by_city_name_cached(data.text)
-
-          if current_weather_data.cod !== 200 do
-              current_weather_data.message
-          else
-            Mattslasher.MattermostTable.render_table(
-              %Mattslasher.MattermostTable{
-                alignments: ["c", "c"],
-                rows:       OpenWeatherMap.CurrentWeatherData.map_struct_to_list(
-                  current_weather_data,
-                  [["Name", "Value"]]
-                ),
-              }
-            )
-          end
-        else
-          "good"
-        end
+    response =
+      if data.command === "/weather" do
+        execute_weather_command(data.text)
+      else
+        "Unknown command."
+      end
 
       conn
-      |> put_resp_header("Content-Type", "text/plain") |> send_resp(200, response)
-    else
-      conn 
-      |> send_resp(400, "Bad Request!")
-    end
+      |> put_resp_header("content-type", "text/plain") |> send_resp(200, response)
   end
 
   get "/" do
     conn
     |> send_resp(200, "Nothing to see here.")
   end
-
-  match _, do: send_resp(conn, 200, "Nothing to see here.")
 
   def start_link (port) do
     Plug.Adapters.Cowboy.http(Mattslasher.Router, [], port: port)
