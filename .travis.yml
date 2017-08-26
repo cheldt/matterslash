@@ -6,5 +6,7 @@ otp_release:
 sudo: false
 env:
   - MIX_ENV=test
+script:
+  - mix do compile --warnings-as-errors, coveralls.json
 after_success:
-  mix coveralls.travis
+  - bash <(curl -s https://codecov.io/bash)

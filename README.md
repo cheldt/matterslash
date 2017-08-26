@@ -1,7 +1,7 @@
 # Mattslasher
 
 [![Master](https://travis-ci.org/cheldt/mattslasher.svg?branch=master)](https://travis-ci.org/cheldt/mattslasher)
-[![Coverage Status](https://coveralls.io/repos/github/cheldt/mattslasher/badge.svg?branch=master)](https://coveralls.io/github/cheldt/mattslasher?branch=master)
+[![codecov](https://codecov.io/gh/cheldt/mattslasher/branch/master/graph/badge.svg?token=)](https://codecov.io/gh/cheldt/mattslasher)
 
 Simple http server, which handles mattermost slash commands.
 
