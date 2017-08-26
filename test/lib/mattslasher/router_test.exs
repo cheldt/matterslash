@@ -43,10 +43,10 @@ defmodule Mattslasher.RouterTest do
   end
 
   test "returns error from api call" do
-    OpenWeatherMap.HttpClientMock.start_link()
-    OpenWeatherMap.HttpClientMock.add_response(%{"cod" => 500, "message" => "api snafu"})
+    OpenWeatherMap.HttpClientStub.start_link()
+    OpenWeatherMap.HttpClientStub.add_response(%{"cod" => 500, "message" => "api snafu"})
     OpenWeatherMap.WeatherDataCache.start_link()
-    CachexMock.add_data(nil)
+    CachexStub.add_data(nil)
 
     conn = conn(:post, "/", String.replace(@content, "command=blarg", "command=/weather"))
     |> put_req_header("content-type", "application/x-www-form-urlencoded")
@@ -58,10 +58,10 @@ defmodule Mattslasher.RouterTest do
   end
 
   test "executes command on valid parameters and valid command" do
-    OpenWeatherMap.HttpClientMock.start_link()
-    OpenWeatherMap.HttpClientMock.add_response(@response)
+    OpenWeatherMap.HttpClientStub.start_link()
+    OpenWeatherMap.HttpClientStub.add_response(@response)
     OpenWeatherMap.WeatherDataCache.start_link()
-    CachexMock.add_data(nil)
+    CachexStub.add_data(nil)
 
     conn = conn(:post, "/", String.replace(@content, "command=blarg", "command=/weather"))
     |> put_req_header("content-type", "application/x-www-form-urlencoded")

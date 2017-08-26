@@ -1,4 +1,4 @@
-defmodule CachexMock do
+defmodule CachexStub do
   def start_link(_, _) do
     Agent.start_link(fn -> %{} end, name: __MODULE__)
   end

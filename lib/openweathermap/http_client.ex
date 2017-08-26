@@ -6,6 +6,8 @@ defmodule OpenWeatherMap.HttpClient do
 
   """
 
+  @maxwell_adapter_implentation Application.fetch_env!(:mattslasher, :maxwell_adapter_implementation)
+
   defmodule Behaviour do
     @callback send_request(String.t, List.t) :: map
   end
@@ -14,7 +16,7 @@ defmodule OpenWeatherMap.HttpClient do
   middleware Maxwell.Middleware.Opts, connect_timeout: 3000
   middleware Maxwell.Middleware.DecodeJson
 
-  adapter Maxwell.Adapter.Hackney
+  adapter @maxwell_adapter_implentation
 
   @doc """
   Sends http request to api

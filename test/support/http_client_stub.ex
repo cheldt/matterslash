@@ -1,4 +1,4 @@
-defmodule OpenWeatherMap.HttpClientMock do
+defmodule OpenWeatherMap.HttpClientStub do
   @behaviour OpenWeatherMap.HttpClient.Behaviour
 
   def start_link do

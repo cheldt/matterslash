@@ -34,25 +34,25 @@ defmodule OpenWeatherMap.CurrentWeatherDataTest do
   }
 
   test "by_city_name_cached requests data on missing cached data" do
-    OpenWeatherMap.HttpClientMock.start_link()
+    OpenWeatherMap.HttpClientStub.start_link()
     OpenWeatherMap.WeatherDataCache.start_link()
-    CachexMock.add_data(nil)
-    OpenWeatherMap.HttpClientMock.add_response(@response)
+    CachexStub.add_data(nil)
+    OpenWeatherMap.HttpClientStub.add_response(@response)
 
     assert @mapped_struct === by_city_name_cached("foo_city")
   end
 
   test "by_city_name_cached returns cached data" do
-    OpenWeatherMap.HttpClientMock.start_link()
+    OpenWeatherMap.HttpClientStub.start_link()
     OpenWeatherMap.WeatherDataCache.start_link()
-    CachexMock.add_data(@mapped_struct)
+    CachexStub.add_data(@mapped_struct)
 
     assert @mapped_struct === by_city_name_cached("foo_city")
   end
 
   test "by_city_name returns currentweather-struct including error code on http-client error" do
-    OpenWeatherMap.HttpClientMock.start_link()
-    OpenWeatherMap.HttpClientMock.add_response(%{"cod" => 500, "message" => "foo bar"})
+    OpenWeatherMap.HttpClientStub.start_link()
+    OpenWeatherMap.HttpClientStub.add_response(%{"cod" => 500, "message" => "foo bar"})
 
     expected_struct = %OpenWeatherMap.CurrentWeatherData{cod: 500, message: "foo bar"}
 
@@ -60,15 +60,15 @@ defmodule OpenWeatherMap.CurrentWeatherDataTest do
   end
 
   test "by_city_name returns well defined struct on success" do
-    OpenWeatherMap.HttpClientMock.start_link()
-    OpenWeatherMap.HttpClientMock.add_response(@response)
+    OpenWeatherMap.HttpClientStub.start_link()
+    OpenWeatherMap.HttpClientStub.add_response(@response)
 
     assert @mapped_struct === by_city_name("foobar")
   end
 
   test "by_city_name_raw returns map including error code on http-client error" do
-    OpenWeatherMap.HttpClientMock.start_link()
-    OpenWeatherMap.HttpClientMock.add_response(%{"cod" => 500, "message" => "foo bar"})
+    OpenWeatherMap.HttpClientStub.start_link()
+    OpenWeatherMap.HttpClientStub.add_response(%{"cod" => 500, "message" => "foo bar"})
 
     expected_struct = %{"cod" => 500, "message" => "foo bar"}
 
@@ -76,8 +76,8 @@ defmodule OpenWeatherMap.CurrentWeatherDataTest do
   end
 
   test "by_city_name_raw returns complete json response as map" do
-    OpenWeatherMap.HttpClientMock.start_link()
-    OpenWeatherMap.HttpClientMock.add_response(@response)
+    OpenWeatherMap.HttpClientStub.start_link()
+    OpenWeatherMap.HttpClientStub.add_response(@response)
 
     assert @response === by_city_name_raw("foo")
   end

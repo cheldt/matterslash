@@ -8,7 +8,7 @@ defmodule OpenWeatherMap.WeatherDataCacheTest do
   end 
 
   test "get_current_weather_data returns empty struct on missing cached data" do
-    CachexMock.add_data(nil);
+    CachexStub.add_data(nil);
 
     expected_result = %OpenWeatherMap.CurrentWeatherData{}
 
@@ -32,7 +32,7 @@ defmodule OpenWeatherMap.WeatherDataCacheTest do
       cod:         200
     }
 
-    CachexMock.add_data(expected_result);
+    CachexStub.add_data(expected_result);
 
     assert expected_result === get_current_weather_data("fooo");
   end
@@ -60,5 +60,4 @@ defmodule OpenWeatherMap.WeatherDataCacheTest do
 
     assert expected_result === get_current_weather_data("FOOBAR ")
   end
-
 end

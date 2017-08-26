@@ -33,7 +33,8 @@ config :mattslasher,
         "humidity" => %{ "standard" => "%"}
     },
     openweathermap_api_http_client_implementation: OpenWeatherMap.HttpClient,
-    cachex_implementation: Cachex
+    cachex_implementation: Cachex,
+    maxwell_adapter_implementation: Maxwell.Adapter.Hackney
 #
 # And access this configuration in your application as:
 #
